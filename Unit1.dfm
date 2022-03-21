@@ -67,6 +67,7 @@ object Form1: TForm1
     Top = 37
     Width = 121
     Height = 21
+    Enabled = False
     TabOrder = 0
   end
   object EditKitchen: TEdit
@@ -74,6 +75,7 @@ object Form1: TForm1
     Top = 77
     Width = 121
     Height = 21
+    Enabled = False
     TabOrder = 1
   end
   object EditTime: TEdit
@@ -81,6 +83,7 @@ object Form1: TForm1
     Top = 117
     Width = 121
     Height = 21
+    Enabled = False
     TabOrder = 2
   end
   object EditPrice: TEdit
@@ -88,6 +91,7 @@ object Form1: TForm1
     Top = 160
     Width = 121
     Height = 21
+    Enabled = False
     TabOrder = 3
   end
   object ButtonNext: TButton
@@ -115,6 +119,57 @@ object Form1: TForm1
     Height = 25
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100
     TabOrder = 6
+    Visible = False
     OnClick = ButtonAddClick
+  end
+  object ButtonSave: TButton
+    Left = 279
+    Top = 115
+    Width = 97
+    Height = 25
+    Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+    TabOrder = 7
+    Visible = False
+    OnClick = ButtonSaveClick
+  end
+  object ButtonOpen: TButton
+    Left = 279
+    Top = 75
+    Width = 97
+    Height = 25
+    Caption = #1054#1090#1082#1088#1099#1090#1100
+    TabOrder = 8
+    OnClick = ButtonOpenClick
+  end
+  object ButtonCreate: TButton
+    Left = 279
+    Top = 8
+    Width = 97
+    Height = 25
+    Caption = #1057#1086#1079#1076#1072#1090#1100
+    TabOrder = 9
+    OnClick = ButtonCreateClick
+  end
+  object ButtonAccept: TButton
+    Left = 144
+    Top = 218
+    Width = 121
+    Height = 25
+    Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1080#1079#1077#1085#1077#1085#1080#1103
+    TabOrder = 10
+    Visible = False
+    OnClick = ButtonAcceptClick
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = '.abr'
+    Filter = 'abra cadabra base|*.abr'
+    Left = 280
+    Top = 208
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.abr'
+    Filter = 'abra cadabra base|*.abr'
+    Left = 336
+    Top = 208
   end
 end
