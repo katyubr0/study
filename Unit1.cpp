@@ -42,7 +42,7 @@ void __fastcall TForm1::ButtonAddClick(TObject *Sender)
 		strcpy(dvec[vMax].time,AnsiString(EditTime->Text).c_str());
 	}
 	if(EditName->Text == ""){
-		strcpy(dvec[vMax].name,"Не указано");
+		strcpy(dvec[vMax].price,"Не указано");
 	}else{
 		strcpy(dvec[vMax].price,AnsiString(EditPrice->Text).c_str());
 	}
@@ -51,6 +51,10 @@ void __fastcall TForm1::ButtonAddClick(TObject *Sender)
 	ShowPresTxt();
 	LablePage->Caption = vPres + 1;
 	LableMax->Caption = vMax;
+	Form1->EditName->Text = "";
+	Form1->EditKitchen->Text = "";
+	Form1->EditTime->Text = "";
+	Form1->EditPrice->Text = "";
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonBackClick(TObject *Sender)
