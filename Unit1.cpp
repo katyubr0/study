@@ -21,12 +21,24 @@ void ShowPresTxt(){
 	Form1->EditKitchen->Text = dvec[vPres].kitchen;
 	Form1->EditTime->Text = dvec[vPres].time;
 	Form1->EditPrice->Text = dvec[vPres].price;
+	if(dvec[vPres].have == true){
+		Form1->ButtonHave->Checked = true;
+	}else{
+		Form1->ButtonHave->Checked = false;
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonAddClick(TObject *Sender)
 {
 	ButtonNext->Visible = false;
 	ButtonBack->Visible = false;
+	ButtonAdd->Visible = false;
+	ButtonAccept->Visible = true;
+	EditName->Enabled = true;
+	EditKitchen->Enabled = true;
+	EditTime->Enabled = true;
+	EditPrice->Enabled = true;
+	ButtonHave->Enabled = true;
 	vPres = vMax;
 	vMax++;
 	LablePage->Caption = vPres + 1;
@@ -35,6 +47,7 @@ void __fastcall TForm1::ButtonAddClick(TObject *Sender)
 	Form1->EditKitchen->Text = "";
 	Form1->EditTime->Text = "";
 	Form1->EditPrice->Text = "";
+	Form1->ButtonHave->Checked = false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonBackClick(TObject *Sender)
@@ -43,7 +56,7 @@ void __fastcall TForm1::ButtonBackClick(TObject *Sender)
 		vPres--;
 		ShowPresTxt();
 		LablePage->Caption = vPres + 1;
-    }
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonNextClick(TObject *Sender)
@@ -56,54 +69,17 @@ void __fastcall TForm1::ButtonNextClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::ButtonSaveClick(TObject *Sender)
-{
-		if (SaveDialog1->Execute()){
-		FILE *f = fopen(AnsiString(SaveDialog1->FileName).c_str(), "wb");
-		fwrite(&dvec[0],sizeof(dishes),vMax,f);
-		fclose(f);
-		}
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::ButtonOpenClick(TObject *Sender)
-{
-	if(OpenDialog1->Execute()){
-		ButtonAdd->Visible = true;
-		FILE *f = fopen(AnsiString(OpenDialog1->FileName).c_str(), "rb");
-		for(int i=0; i<dvec.max_size(); i++){
-			dishes s;
-			fread(&s,sizeof(dishes),1,f);
-			if(feof(f)) break;
-			dvec.push_back(s);
-		}
-		fclose(f);
-		vMax=dvec.size();
-		vPres=0;
-		ShowPresTxt();
-		LablePage->Caption = vPres + 1;
-		LableMax->Caption = vMax;
-	}
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::ButtonCreateClick(TObject *Sender)
-{
-	ButtonAdd->Visible = true;
-	ButtonAccept->Visible = true;
-	EditName->Enabled = true;
-	EditKitchen->Enabled = true;
-	EditTime->Enabled = true;
-	EditPrice->Enabled = true;
-	vMax = 1;
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TForm1::ButtonAcceptClick(TObject *Sender)
 {
-	ButtonSave->Visible = True;
-	ButtonBack->Visible = True;
-	ButtonNext->Visible = True;
+	if(vMax>1){
+		ButtonBack->Visible = true;
+		ButtonNext->Visible = true;
+	}
+	ButtonAdd->Visible = true;
+	MenuSave->Visible = true;
+	MenuClose->Visible = true;
+	MenuEdit->Visible = true;
+	ButtonAccept->Visible = false;
 	dvec.push_back(dishes());
 	if(EditName->Text == ""){
 		strcpy(dvec[vPres].name,"Не указано");
@@ -120,13 +96,116 @@ void __fastcall TForm1::ButtonAcceptClick(TObject *Sender)
 	}else{
 		strcpy(dvec[vPres].time,AnsiString(EditTime->Text).c_str());
 	}
-	if(EditName->Text == ""){
+	if(EditPrice->Text == ""){
 		strcpy(dvec[vPres].price,"Не указано");
 	}else{
 		strcpy(dvec[vPres].price,AnsiString(EditPrice->Text).c_str());
 	}
+	dvec[vPres].have = ButtonHave->Checked;
 	LableMax->Caption = vMax;
 	LablePage->Caption = vPres+1;
+	EditName->Enabled = false;
+	EditKitchen->Enabled = false;
+	EditTime->Enabled = false;
+	EditPrice->Enabled = false;
+	ButtonHave->Enabled = false;
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm1::MenuOpenClick(TObject *Sender)
+{
+	if(OpenDialog1->Execute()){
+		FILE *f = fopen(AnsiString(OpenDialog1->FileName).c_str(), "rb");
+		dvec.clear();
+		for(int i=0; i<dvec.max_size(); i++){
+			dishes s;
+			fread(&s,sizeof(dishes),1,f);
+			if(feof(f)) break;
+			dvec.push_back(s);
+		}
+		fclose(f);
+		vMax=dvec.size();
+		vPres=0;
+		ShowPresTxt();
+		LablePage->Caption = vPres + 1;
+		LableMax->Caption = vMax;
+		MenuClose->Visible = true;
+		MenuEdit->Visible = true;
+		EditName->Enabled = false;
+		EditKitchen->Enabled = false;
+		EditTime->Enabled = false;
+		EditPrice->Enabled = false;
+		ButtonHave->Enabled = false;
+		ButtonAccept->Visible = false;
+		ButtonAdd->Visible = true;
+		MenuCreate->Visible = false;
+		if(vMax>1){
+			ButtonNext->Visible = true;
+			ButtonBack->Visible = true;
+		}else{
+			ButtonNext->Visible = false;
+			ButtonBack->Visible = false;
+        }
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::MenuSaveClick(TObject *Sender)
+{
+	if (SaveDialog1->Execute()){
+		FILE *f = fopen(AnsiString(SaveDialog1->FileName).c_str(), "wb");
+		fwrite(&dvec[0],sizeof(dishes),vMax,f);
+		fclose(f);
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::MenuCreateClick(TObject *Sender)
+{
+	ButtonAccept->Visible = true;
+	EditName->Enabled = true;
+	EditKitchen->Enabled = true;
+	EditTime->Enabled = true;
+	EditPrice->Enabled = true;
+	ButtonHave->Enabled = true;
+	MenuCreate->Visible = false;
+	vMax = 1;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::MenuEditClick(TObject *Sender)
+{
+	EditName->Enabled = true;
+	EditKitchen->Enabled = true;
+	EditTime->Enabled = true;
+	EditPrice->Enabled = true;
+	ButtonHave->Enabled = true;
+	ButtonAccept->Visible = true;
+	ButtonNext->Visible = false;
+	ButtonBack->Visible = false;
+	ButtonAdd->Visible = false;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::MenuCloseClick(TObject *Sender)
+{
+	dvec.clear();
+	vMax = 0;
+	vPres = 0;
+	LablePage->Caption = 0;
+	LableMax->Caption = 0;
+	EditName->Text = "";
+	EditKitchen->Text = "";
+	EditTime->Text = "";
+	EditPrice->Text = "";
+	ButtonHave->Checked = false;
+	ButtonNext->Visible = false;
+	ButtonBack->Visible = false;
+	ButtonAdd->Visible = false;
+	MenuEdit->Visible = false;
+}
+//---------------------------------------------------------------------------
+
 
