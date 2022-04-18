@@ -16,15 +16,26 @@
 #include <Vcl.ImgList.hpp>
 #include <vector>
 #include <string>
+
 using namespace std;
 //---------------------------------------------------------------------------
 class dishes{
 	public:
 		char name[30];
 		char kitchen[30];
-		char time[30];
-		char price[30];
+		int time;
+		int price;
 		bool have;
+
+		bool friend operator==(const dishes &a, const dishes &b){
+			return(
+				strcmp (a.name, b.name)==0 ||
+				strcmp (a.kitchen, b.kitchen)==0 ||
+				a.time == b.time ||
+				a.price == b.price ||
+				a.have == b.have
+				);
+		}
 };
 //----------------------------------------------------------------------------
 class TForm1 : public TForm
@@ -34,28 +45,34 @@ __published:	// IDE-managed Components
 	TEdit *EditKitchen;
 	TEdit *EditTime;
 	TEdit *EditPrice;
-	TLabel *LablePage;
+	TCheckBox *ButtonHave;
+
 	TButton *ButtonNext;
 	TButton *ButtonBack;
 	TButton *ButtonAdd;
+	TButton *ButtonAccept;
+
+	TLabel *LablePage;
 	TLabel *LabelName;
 	TLabel *LabelKitchen;
 	TLabel *LabelTime;
 	TLabel *LabelPrice;
 	TLabel *Label7;
 	TLabel *LableMax;
-	TOpenDialog *OpenDialog1;
-	TSaveDialog *SaveDialog1;
-	TButton *ButtonAccept;
+
 	TMainMenu *MainMenu1;
-	TMenuItem *dfgh1;
 	TMenuItem *MenuCreate;
 	TMenuItem *MenuEdit;
 	TMenuItem *MenuSave;
 	TMenuItem *MenuOpen;
 	TMenuItem *MenuClose;
-	TCheckBox *ButtonHave;
+
 	TImageList *ImageList1;
+	TOpenDialog *OpenDialog1;
+	TSaveDialog *SaveDialog1;
+	TButton *ButtonDelete;
+	TMenuItem *N1;
+
 	void __fastcall ButtonAddClick(TObject *Sender);
 	void __fastcall ButtonBackClick(TObject *Sender);
 	void __fastcall ButtonNextClick(TObject *Sender);
@@ -65,13 +82,17 @@ __published:	// IDE-managed Components
 	void __fastcall MenuCreateClick(TObject *Sender);
 	void __fastcall MenuEditClick(TObject *Sender);
 	void __fastcall MenuCloseClick(TObject *Sender);
-private:	// User declarations
-public:		// User declarations
+	void __fastcall ButtonDeleteClick(TObject *Sender);
+	void __fastcall N1Click(TObject *Sender);
+private:
+public:
 	__fastcall TForm1(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
 extern int vMax, vPres;
 extern std::vector <dishes> dvec;
+extern std::vector<TButton *> buttonList;
+extern std::vector <TMenuItem *> menuList;
 //---------------------------------------------------------------------------
 #endif

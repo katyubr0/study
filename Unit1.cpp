@@ -10,6 +10,8 @@
 TForm1 *Form1;
 int vMax=0, vPres=0;
 std::vector <dishes> dvec;
+std::vector<TButton *> buttonList;
+std::vector <TMenuItem *> menuList;
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
@@ -21,11 +23,16 @@ void ShowPresTxt(){
 	Form1->EditKitchen->Text = dvec[vPres].kitchen;
 	Form1->EditTime->Text = dvec[vPres].time;
 	Form1->EditPrice->Text = dvec[vPres].price;
-	if(dvec[vPres].have == true){
-		Form1->ButtonHave->Checked = true;
-	}else{
-		Form1->ButtonHave->Checked = false;
-	}
+	Form1->ButtonHave->Checked = dvec[vPres].have;
+
+}
+//---------------------------------------------------------------------------
+void EditEnabled(bool bol){
+	Form1->EditName->Enabled = bol;
+	Form1->EditKitchen->Enabled = bol;
+	Form1->EditTime->Enabled = bol;
+	Form1->EditPrice->Enabled = bol;
+	Form1->ButtonHave->Enabled = bol;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonAddClick(TObject *Sender)
@@ -33,21 +40,21 @@ void __fastcall TForm1::ButtonAddClick(TObject *Sender)
 	ButtonNext->Visible = false;
 	ButtonBack->Visible = false;
 	ButtonAdd->Visible = false;
+	ButtonDelete->Visible = false;
 	ButtonAccept->Visible = true;
-	EditName->Enabled = true;
-	EditKitchen->Enabled = true;
-	EditTime->Enabled = true;
-	EditPrice->Enabled = true;
-	ButtonHave->Enabled = true;
+	EditEnabled(true);
+
 	vPres = vMax;
 	vMax++;
+
 	LablePage->Caption = vPres + 1;
 	LableMax->Caption = vMax;
-	Form1->EditName->Text = "";
-	Form1->EditKitchen->Text = "";
-	Form1->EditTime->Text = "";
-	Form1->EditPrice->Text = "";
-	Form1->ButtonHave->Checked = false;
+
+	EditName->Text = "";
+	EditKitchen->Text = "";
+	EditTime->Text = "";
+	EditPrice->Text = "";
+	ButtonHave->Checked = false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonBackClick(TObject *Sender)
@@ -71,44 +78,36 @@ void __fastcall TForm1::ButtonNextClick(TObject *Sender)
 
 void __fastcall TForm1::ButtonAcceptClick(TObject *Sender)
 {
-	if(vMax>1){
-		ButtonBack->Visible = true;
-		ButtonNext->Visible = true;
-	}
-	ButtonAdd->Visible = true;
-	MenuSave->Visible = true;
-	MenuClose->Visible = true;
-	MenuEdit->Visible = true;
-	ButtonAccept->Visible = false;
+
 	dvec.push_back(dishes());
-	if(EditName->Text == ""){
-		strcpy(dvec[vPres].name,"Не указано");
+	if(EditName->Text == "" || EditTime->Text == "" || EditPrice->Text == ""){
+		MessageBox(0,L"Не заполнено обязательное поле!", L"Ошибка!", MB_OK + MB_ICONWARNING);
 	}else{
 		strcpy(dvec[vPres].name,AnsiString(EditName->Text).c_str());
+		dvec[vPres].time = EditTime->Text.ToInt();
+		dvec[vPres].price = EditPrice->Text.ToInt();
+		dvec[vPres].have = ButtonHave->Checked;
+
+		if(vMax>1){
+			ButtonBack->Visible = true;
+			ButtonNext->Visible = true;
+		}
+		ButtonAdd->Visible = true;
+		MenuSave->Visible = true;
+		MenuClose->Visible = true;
+		MenuEdit->Visible = true;
+		ButtonDelete->Visible = true;
+		ButtonAccept->Visible = false;
+		LableMax->Caption = vMax;
+		LablePage->Caption = vPres+1;
+		EditEnabled(false);
 	}
 	if(EditKitchen->Text == ""){
 		strcpy(dvec[vPres].kitchen,"Не указано");
+		EditKitchen->Text = "Не указано";
 	}else{
 		strcpy(dvec[vPres].kitchen,AnsiString(EditKitchen->Text).c_str());
 	}
-	if(EditTime->Text == ""){
-		strcpy(dvec[vPres].time,"Не указано");
-	}else{
-		strcpy(dvec[vPres].time,AnsiString(EditTime->Text).c_str());
-	}
-	if(EditPrice->Text == ""){
-		strcpy(dvec[vPres].price,"Не указано");
-	}else{
-		strcpy(dvec[vPres].price,AnsiString(EditPrice->Text).c_str());
-	}
-	dvec[vPres].have = ButtonHave->Checked;
-	LableMax->Caption = vMax;
-	LablePage->Caption = vPres+1;
-	EditName->Enabled = false;
-	EditKitchen->Enabled = false;
-	EditTime->Enabled = false;
-	EditPrice->Enabled = false;
-	ButtonHave->Enabled = false;
 }
 //---------------------------------------------------------------------------
 
@@ -131,14 +130,11 @@ void __fastcall TForm1::MenuOpenClick(TObject *Sender)
 		LableMax->Caption = vMax;
 		MenuClose->Visible = true;
 		MenuEdit->Visible = true;
-		EditName->Enabled = false;
-		EditKitchen->Enabled = false;
-		EditTime->Enabled = false;
-		EditPrice->Enabled = false;
-		ButtonHave->Enabled = false;
+		EditEnabled(false);
 		ButtonAccept->Visible = false;
 		ButtonAdd->Visible = true;
 		MenuCreate->Visible = false;
+		ButtonDelete->Visible = true;
 		if(vMax>1){
 			ButtonNext->Visible = true;
 			ButtonBack->Visible = true;
@@ -163,11 +159,7 @@ void __fastcall TForm1::MenuSaveClick(TObject *Sender)
 void __fastcall TForm1::MenuCreateClick(TObject *Sender)
 {
 	ButtonAccept->Visible = true;
-	EditName->Enabled = true;
-	EditKitchen->Enabled = true;
-	EditTime->Enabled = true;
-	EditPrice->Enabled = true;
-	ButtonHave->Enabled = true;
+	EditEnabled(true);
 	MenuCreate->Visible = false;
 	vMax = 1;
 }
@@ -176,15 +168,12 @@ void __fastcall TForm1::MenuCreateClick(TObject *Sender)
 
 void __fastcall TForm1::MenuEditClick(TObject *Sender)
 {
-	EditName->Enabled = true;
-	EditKitchen->Enabled = true;
-	EditTime->Enabled = true;
-	EditPrice->Enabled = true;
-	ButtonHave->Enabled = true;
+	EditEnabled(true);
 	ButtonAccept->Visible = true;
 	ButtonNext->Visible = false;
 	ButtonBack->Visible = false;
 	ButtonAdd->Visible = false;
+	ButtonDelete->Visible = false;
 }
 //---------------------------------------------------------------------------
 
@@ -200,6 +189,8 @@ void __fastcall TForm1::MenuCloseClick(TObject *Sender)
 	EditKitchen->Text = "";
 	EditTime->Text = "";
 	EditPrice->Text = "";
+	MenuCreate->Visible = true;
+	ButtonDelete->Visible = false;
 	ButtonHave->Checked = false;
 	ButtonNext->Visible = false;
 	ButtonBack->Visible = false;
@@ -208,4 +199,39 @@ void __fastcall TForm1::MenuCloseClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm1::ButtonDeleteClick(TObject *Sender)
+{
+	if(vMax>0){
+		dvec.erase(dvec.begin()+vPres);
+		vMax--;
+		vPres--;
+		LablePage->Caption = vPres + 1;
+		LableMax->Caption = vMax;
+		ShowPresTxt();
+	}
+	if (vMax = 1) {
+		ButtonDelete->Visible = false;
+		EditName->Text = "";
+		EditKitchen->Text = "";
+		EditTime->Text = "";
+		EditPrice->Text = "";
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::N1Click(TObject *Sender)
+{
+	dishes d;
+	std::vector<dishes>::iteration p;
+	strcpy(d.name, AnsiString(EditSearch->Text).c_str());
+	strcpy(d.kitchen, AnsiString(EditSearch->Text).c_str());
+	d.time = EditSearch->Text.ToInt;
+	d.price = EditSearch->Text.ToInt;
+	d.have = ButtonHaveEdit->Checked;
+	p = std::find(dvec.begin(),dvec.end(),d);
+	vPres=p-dvec.begin();
+	if(vPres<vMax) ShowRecord();
+}
+//---------------------------------------------------------------------------
 

@@ -147,6 +147,16 @@ object Form1: TForm1
     Enabled = False
     TabOrder = 8
   end
+  object ButtonDelete: TButton
+    Left = 279
+    Top = 66
+    Width = 98
+    Height = 25
+    Caption = #1059#1076#1072#1083#1080#1090#1100
+    TabOrder = 9
+    Visible = False
+    OnClick = ButtonDeleteClick
+  end
   object OpenDialog1: TOpenDialog
     DefaultExt = '.abr'
     Filter = 'abra cadabra base|*.abr'
@@ -188,6 +198,10 @@ object Form1: TForm1
       Visible = False
       OnClick = MenuEditClick
     end
+    object N1: TMenuItem
+      Caption = #1055#1086#1080#1089#1082
+      OnClick = N1Click
+    end
   end
   object ImageList1: TImageList
     ColorDepth = cd32Bit
@@ -196,7 +210,7 @@ object Form1: TForm1
     Left = 104
     Top = 224
     Bitmap = {
-      494C010102000800200020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010102000800280020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000000000000000000000000000010101133333327A1919
