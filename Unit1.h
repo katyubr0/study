@@ -16,6 +16,7 @@
 #include <Vcl.ImgList.hpp>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 //---------------------------------------------------------------------------
@@ -32,8 +33,7 @@ class dishes{
 				strcmp (a.name, b.name)==0 ||
 				strcmp (a.kitchen, b.kitchen)==0 ||
 				a.time == b.time ||
-				a.price == b.price ||
-				a.have == b.have
+				a.price == b.price
 				);
 		}
 };
@@ -59,8 +59,7 @@ __published:	// IDE-managed Components
 	TLabel *LabelPrice;
 	TLabel *Label7;
 	TLabel *LableMax;
-
-	TMainMenu *MainMenu1;
+	TMainMenu *MainMenu;
 	TMenuItem *MenuCreate;
 	TMenuItem *MenuEdit;
 	TMenuItem *MenuSave;
@@ -71,7 +70,7 @@ __published:	// IDE-managed Components
 	TOpenDialog *OpenDialog1;
 	TSaveDialog *SaveDialog1;
 	TButton *ButtonDelete;
-	TMenuItem *N1;
+	TMenuItem *MenuSearch;
 
 	void __fastcall ButtonAddClick(TObject *Sender);
 	void __fastcall ButtonBackClick(TObject *Sender);
@@ -83,7 +82,7 @@ __published:	// IDE-managed Components
 	void __fastcall MenuEditClick(TObject *Sender);
 	void __fastcall MenuCloseClick(TObject *Sender);
 	void __fastcall ButtonDeleteClick(TObject *Sender);
-	void __fastcall N1Click(TObject *Sender);
+	void __fastcall MenuSearchClick(TObject *Sender);
 private:
 public:
 	__fastcall TForm1(TComponent* Owner);

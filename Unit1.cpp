@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "Unit1.h"
+#include "Unit2.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -42,6 +43,7 @@ void __fastcall TForm1::ButtonAddClick(TObject *Sender)
 	ButtonAdd->Visible = false;
 	ButtonDelete->Visible = false;
 	ButtonAccept->Visible = true;
+	MenuSearch->Visible = false;
 	EditEnabled(true);
 
 	vPres = vMax;
@@ -91,6 +93,7 @@ void __fastcall TForm1::ButtonAcceptClick(TObject *Sender)
 		if(vMax>1){
 			ButtonBack->Visible = true;
 			ButtonNext->Visible = true;
+			MenuSearch->Visible = true;
 		}
 		ButtonAdd->Visible = true;
 		MenuSave->Visible = true;
@@ -128,6 +131,7 @@ void __fastcall TForm1::MenuOpenClick(TObject *Sender)
 		ShowPresTxt();
 		LablePage->Caption = vPres + 1;
 		LableMax->Caption = vMax;
+
 		MenuClose->Visible = true;
 		MenuEdit->Visible = true;
 		EditEnabled(false);
@@ -135,13 +139,9 @@ void __fastcall TForm1::MenuOpenClick(TObject *Sender)
 		ButtonAdd->Visible = true;
 		MenuCreate->Visible = false;
 		ButtonDelete->Visible = true;
-		if(vMax>1){
-			ButtonNext->Visible = true;
-			ButtonBack->Visible = true;
-		}else{
-			ButtonNext->Visible = false;
-			ButtonBack->Visible = false;
-        }
+		ButtonNext->Visible = vMax>1;
+		ButtonBack->Visible = vMax>1;
+		MenuSearch->Visible = vMax>1;
 	}
 }
 //---------------------------------------------------------------------------
@@ -174,6 +174,7 @@ void __fastcall TForm1::MenuEditClick(TObject *Sender)
 	ButtonBack->Visible = false;
 	ButtonAdd->Visible = false;
 	ButtonDelete->Visible = false;
+	MenuSearch->Visible = false;
 }
 //---------------------------------------------------------------------------
 
@@ -196,42 +197,48 @@ void __fastcall TForm1::MenuCloseClick(TObject *Sender)
 	ButtonBack->Visible = false;
 	ButtonAdd->Visible = false;
 	MenuEdit->Visible = false;
+	MenuSearch->Visible = false;
+	MenuClose->Visible = false;
 }
 //---------------------------------------------------------------------------
 
 
 void __fastcall TForm1::ButtonDeleteClick(TObject *Sender)
 {
-	if(vMax>0){
+	if(vMax>1){
 		dvec.erase(dvec.begin()+vPres);
 		vMax--;
-		vPres--;
+		if(vPres != 0){
+			vPres--;
+		}
 		LablePage->Caption = vPres + 1;
 		LableMax->Caption = vMax;
 		ShowPresTxt();
-	}
-	if (vMax = 1) {
-		ButtonDelete->Visible = false;
+		MenuSave->Visible = true;
+	}else if (vMax == 1) {
 		EditName->Text = "";
 		EditKitchen->Text = "";
 		EditTime->Text = "";
 		EditPrice->Text = "";
+		vMax=0;
+		vPres = 0;
+		LablePage->Caption = 0;
+		LableMax->Caption = 0;
+		dvec.clear();
+
+		MenuSave->Visible = false;
+		ButtonDelete->Visible = false;
+		MenuSearch->Visible = false;
+		MenuEdit->Visible = false;
+		MenuCreate->Visible = true;
+		ButtonAdd->Visible = false;
+		MenuClose->Visible = false;
 	}
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm1::N1Click(TObject *Sender)
+void __fastcall TForm1::MenuSearchClick(TObject *Sender)
 {
-	dishes d;
-	std::vector<dishes>::iteration p;
-	strcpy(d.name, AnsiString(EditSearch->Text).c_str());
-	strcpy(d.kitchen, AnsiString(EditSearch->Text).c_str());
-	d.time = EditSearch->Text.ToInt;
-	d.price = EditSearch->Text.ToInt;
-	d.have = ButtonHaveEdit->Checked;
-	p = std::find(dvec.begin(),dvec.end(),d);
-	vPres=p-dvec.begin();
-	if(vPres<vMax) ShowRecord();
+	Form2->Visible = true;
 }
 //---------------------------------------------------------------------------
 
